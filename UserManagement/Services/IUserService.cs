@@ -1,0 +1,107 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections.Generic;
+using UserManagement.Dtos;
+using UserManagement.entities;
+
+namespace UserManagement.Services
+{
+    public interface IUserService
+    {
+        Task<UserResponse> Create(UserCreateDto user);
+        Task<IEnumerable<UserResponse>> GetAll();
+        Task<UserResponse?> GetById(Guid id);
+        Task<UserResponse> Update(UserUpdateDto user);
+        Task Delete(Guid id);
+    }
+
+    public class UserService(AppDbContext dbContext) : IUserService
+    {
+
+        public async Task<UserResponse> Create(UserCreateDto dto)
+        {
+
+            UserEntities user = new()
+            {
+                id = Guid.CreateVersion7(),
+                FullName = dto.FullName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                Birthdate = dto.Birthdate,
+                IsMarried = dto.IsMarried
+            };
+            UserEntities entity = dbContext.Users.Add(user).Entity;
+            await dbContext.SaveChangesAsync();
+
+            int? age = null;
+            if (entity.Birthdate != null)
+            {
+                age = DateTime.UtcNow.Year - entity.Birthdate.Value.Year;
+            }
+
+            return new UserResponse
+            {
+                FullName = entity.FullName,
+                PhoneNumber = entity.PhoneNumber,
+                Email = entity.Email,
+                Birthdate = entity.Birthdate,
+                IsMarried = entity.IsMarried,
+                Age = age
+            };
+
+        }
+
+
+
+        public async Task<IEnumerable<UserResponse>> GetAll()
+        {
+            List<UserResponse> list = await dbContext.Users.Select(x => new UserResponse
+            {
+                Email = x.Email,
+                FullName = x.FullName,
+                PhoneNumber = x.PhoneNumber,
+                Birthdate = x.Birthdate,
+                IsMarried = x.IsMarried,
+                Age = 7
+            }).ToListAsync();
+            return list;
+        }
+
+        public async Task<UserResponse?> GetById(Guid id)
+        {
+            UserEntities? user = await dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+
+            int? age = null;
+            if (user.Birthdate != null)
+            {
+                age = DateTime.UtcNow.Year - user.Birthdate.Value.Year;
+            }
+
+            UserResponse response = new()
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Birthdate = user.Birthdate,
+                IsMarried = user.IsMarried,
+                Age = age
+            };
+
+            return response;
+        }
+
+        public Task<UserResponse> Update(UserUpdateDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
