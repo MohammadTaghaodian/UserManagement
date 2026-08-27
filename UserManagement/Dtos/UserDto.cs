@@ -21,7 +21,7 @@ namespace UserManagement.Dtos
 
     public class UserUpdateDto
     {
-        public Guid id { get; set; }
+        public required Guid id { get; set; }
 
         public string? FullName { get; set; }
 
@@ -37,6 +37,7 @@ namespace UserManagement.Dtos
 
     public class UserResponse
     {
+        public required Guid id { get; set; }
         public required string FullName { get; set; }
         public required string Email { get; set; }
         public required string PhoneNumber { get; set; }

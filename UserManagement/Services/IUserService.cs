@@ -11,13 +11,12 @@ namespace UserManagement.Services
         Task<UserResponse> Create(UserCreateDto user);
         Task<IEnumerable<UserResponse>> GetAll();
         Task<UserResponse?> GetById(Guid id);
-        Task<UserResponse> Update(UserUpdateDto user);
-        Task Delete(Guid id);
+        Task<UserResponse?> Update(UserUpdateDto user);
+        Task<String> Delete(Guid id);
     }
 
     public class UserService(AppDbContext dbContext) : IUserService
     {
-
         public async Task<UserResponse> Create(UserCreateDto dto)
         {
 
@@ -41,6 +40,7 @@ namespace UserManagement.Services
 
             return new UserResponse
             {
+                id = entity.id,
                 FullName = entity.FullName,
                 PhoneNumber = entity.PhoneNumber,
                 Email = entity.Email,
@@ -50,13 +50,12 @@ namespace UserManagement.Services
             };
 
         }
-
-
-
+        
         public async Task<IEnumerable<UserResponse>> GetAll()
         {
             List<UserResponse> list = await dbContext.Users.Select(x => new UserResponse
             {
+                id=x.id,
                 Email = x.Email,
                 FullName = x.FullName,
                 PhoneNumber = x.PhoneNumber,
@@ -83,6 +82,7 @@ namespace UserManagement.Services
 
             UserResponse response = new()
             {
+                id = user.id,
                 FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
@@ -94,14 +94,32 @@ namespace UserManagement.Services
             return response;
         }
 
-        public Task<UserResponse> Update(UserUpdateDto user)
+        public async Task<UserResponse?> Update(UserUpdateDto dto)
         {
-            throw new NotImplementedException();
+            UserEntities? user = await dbContext.Users.FindAsync(dto.id);
+            if (user == null) return null;
+            if (dto.IsMarried != null) user.IsMarried = dto.IsMarried.Value;
+            if (dto.PhoneNumber != null) user.PhoneNumber = dto.PhoneNumber;
+            if (dto.Birthdate != null) user.Birthdate = dto.Birthdate;
+            if (dto.FullName != null) user.FullName = dto.FullName;
+            if (dto.Email != null) user.Email = dto.Email;
+
+            await dbContext.SaveChangesAsync();
+            return new UserResponse
+            {
+                id = user.id,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Birthdate = user.Birthdate,
+                IsMarried = user.IsMarried,
+            };
         }
 
-        public Task Delete(Guid id)
+        public async Task<String> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            await dbContext.Users.Where(x => x.id == id).ExecuteDeleteAsync();
+            return "<Mission> Complete";
         }
     }
 }

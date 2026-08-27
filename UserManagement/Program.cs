@@ -44,7 +44,7 @@ app.UseHttpsRedirection();
 app.MapGet("hello",() => "Hello World");
 app.MapGet("sayname",(string name) => "Hello "+name);
 
-app.MapPost("user/create", async (IUserService userService, UserCreateDto dto) =>
+app.MapPost("user/Create", async (IUserService userService, UserCreateDto dto) =>
 {
     UserResponse result = await userService.Create(dto);
     return Results.Ok(result);
@@ -56,9 +56,21 @@ app.MapGet("user/GetAll", async (IUserService userService) =>
     return Results.Ok(result);
 });
 
-app.MapGet("user/GetById{id:guid}", async (IUserService userService, Guid id) =>
+app.MapGet("user/GetById/{id:guid}", async (IUserService userService, Guid id) =>
 {
     UserResponse? result = await userService.GetById(id);
+    return result == null ? Results.NotFound() : Results.Ok(result);
+});
+
+app.MapPut("user/Update", async (IUserService userService, UserUpdateDto dto) =>
+{
+    UserResponse? result = await userService.Update(dto);
+    return result == null ? Results.NotFound() : Results.Ok(result);
+});
+
+app.MapDelete("user/Delete{id:guid}", async (IUserService userService, Guid id) =>
+{
+    String result = await userService.Delete(id);
     return Results.Ok(result);
 });
 

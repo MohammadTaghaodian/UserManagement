@@ -22,7 +22,7 @@ namespace UserManagement.entities
 
         public Boolean IsMarried { get; set; } = false;
 
-
+        public IEnumerable<ClassEntity> Classes { get; set; }
 
     }
 }
