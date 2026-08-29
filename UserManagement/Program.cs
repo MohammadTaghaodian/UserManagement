@@ -22,6 +22,8 @@ builder.Services.AddDbContextPool<AppDbContext>( o =>
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISchoolService,SchoolService >();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 
 WebApplication app = builder.Build();

@@ -55,7 +55,7 @@ namespace UserManagement.Services
         {
             List<UserResponse> list = await dbContext.Users.Select(x => new UserResponse
             {
-                id=x.id,
+                id = x.id,
                 Email = x.Email,
                 FullName = x.FullName,
                 PhoneNumber = x.PhoneNumber,
