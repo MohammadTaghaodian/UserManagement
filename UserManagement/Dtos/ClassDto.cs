@@ -8,7 +8,22 @@ namespace UserManagement.Dtos
 
         public required string Subject { get; set; }
 
-        public Guid SchoolId { get; set; }
+        public Guid? SchoolId { get; set; }
+
+        public IEnumerable<Guid>? Users { get; set; }
+
+    }
+
+    public class ClassUpdateDto
+    {
+        public required Guid id { get; set; }
+        public string? Title { get; set; }
+
+        public string? Subject { get; set; }
+
+        public Guid? SchoolId { get; set; }
+
+        public IEnumerable<Guid>? Users { get; set; }
 
     }
 
@@ -17,6 +32,8 @@ namespace UserManagement.Dtos
         public required Guid id { get; set; }
         public required string Title { get; set; }
         public required string Subject { get; set; }
-        public SchoolEntity? School { get; set; }
+        public Guid? SchoolId { get; set; }
+        public SchoolResponse? School { get; set; }
+        public IEnumerable<UserResponse>? Users { get; set; }
     }
 }

@@ -6,7 +6,6 @@ namespace UserManagement.entities
     [Table("Classes")]
     public class ClassEntity
     {
-
         [Key]
         public required Guid id { get; set; }
 

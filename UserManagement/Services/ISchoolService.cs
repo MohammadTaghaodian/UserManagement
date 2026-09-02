@@ -35,7 +35,10 @@ namespace UserManagement.Services
 
         public async Task<IEnumerable<SchoolResponse>> GetAll()
         {
-            List<SchoolResponse> list = await dbContext.School.Select(x => new SchoolResponse { id = x.id, Title = x.Title }).ToListAsync();
+            List<SchoolResponse> list = await dbContext.School
+                .Include(x => x.Classes)
+                .Select(x => new SchoolResponse { id = x.id, Title = x.Title })
+                .ToListAsync();
             return list;
         }
 

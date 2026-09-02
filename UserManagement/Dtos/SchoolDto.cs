@@ -25,6 +25,6 @@ namespace UserManagement.Dtos
     {
         public required Guid id { get; set; }
         public required string Title { get; set; }
-        public Guid Class { get; set; }
+        public Guid? Class { get; set; }
     }
 }
